@@ -1,5 +1,5 @@
 ## SQL-Server-connector-_dummy-code.R
-## Last modified: 2023-04-21 13:47
+## Last modified: 2023-04-21 17:20
 
 
 ########################################
@@ -32,9 +32,9 @@ odbcListObjects(con)
 
 ## This gives you a list of available schemas for your chosed catalog. You need to know the schema to access the tables you want.
 odbcListObjects(con, catalog="YOURCATALOGNAME")
-## In our case, the schema we want is gisiit
+## In our case, the schema we want is YOURSCHEMANAME
 
-## List tables in catalog for gisiit schema -- this is the command you will use any time you want to see what tables are available on the SQL server.
+## List tables in catalog for YOURSCHEMANAME schema -- this is the command you will use any time you want to see what tables are available on the SQL server.
 available_tables <- odbcListObjects(con, catalog="YOURCATALOGNAME", schema="YOURSCHEMANAME")
 
 ## After you know what table you want, fill it in for this command to get a data frame with the column names and types:
@@ -59,6 +59,6 @@ SHAPE_FROM_SQL <- st_read(con, geometry_column="Shape", query="SELECT YOURCOL1, 
 
 
 ## Plot test, fill in column name:
-plot(SHAPE_FROM_SQL["YOURCOLNAMe"], col = sf.colors(5, categorical = TRUE), border = NA)
+plot(SHAPE_FROM_SQL["YOURCOLNAME"], col = sf.colors(5, categorical = TRUE), border = NA)
 
 

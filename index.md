@@ -72,11 +72,35 @@ be many tables and you'll want to pick through them at your leisure.)
 5. If you find a table that looks promising, you may want to see what columns it contains:  
 ``` COL_NAMES_TYPES <- odbcListColumns(con, catalog="YOURCATALOGNAME", schema="YOURSCHEMANAME", table="YOURTABLENAME") ```
 
-Pull out the column names as a list so you can paste them into your SQL query when you pull your sf object from the database:
-col_names <- col_names_types[, "name"]
-print(col_names)
+6. Optional: Pull out the column names as a list so you can paste them into your SQL query when you pull your object from the database:  
+``` COL_NAMES <- COL_NAMES_TYPES[, "name"] ```
+
+At this point, if you don't need geometry data, you can use DBI to bring data from the table you want into R as a regular data frame:  
+``` YOUR_DB_OBJECT <- DBI::dbGetQuery(con, paste0("SELECT * FROM ", YOURSCHEMANAME, ".", YOURTABLENAME)) ```  
+(The seccond argument of ```dbGetQuery``` lets you pass an arbitrary SQL statement, if you want to compose on the fly.)
+
+#### For more information
+* [https://solutions.posit.co/connections/db/r-packages/odbc/](https://solutions.posit.co/connections/db/r-packages/odbc/)
+* 
 
 
+### Step 3: Bring an object into R that has geometry for mapping
+If the table you want from your SQL Server includes geometry information for mapping that you want to use, you need one more R package: ```sf```. 
 
+* Load the library:  
+```library(sf)```
+* If you want to list out the columns you want from the table by hand, your code might look something like this:  
+``` SHAPE_FROM_SQL <- st_read(con, geometry_column="Shape", query="SELECT YOURCOL1, YOURCOL2, YOURCOL3, YOURCOL4, Shape.STAsBinary() AS Shape FROM YOURSCHEMANAME.YOURTABLENAME") ```  
+	* Be sure to check that your geometry column is named "Shape" (its type will be 'geometry') and if not, adjust the Shape.STAsBinary() call in the SQL query.
+	* (st_read is supposed to automatically figure out which column has geometry, so you shouldn't need the geometry_column option unless there's two columns with geometry info.)
+* Or, if you want to send an R object of type list that contains the column names you want, your code could look like this:  
+``` SHAPE_FROM_SQL <- st_read(con, geometry_column="Shape", query="SELECT ", COL_NAMES, ",", Shape.STAsBinary() AS Shape FROM YOURSCHEMANAME.YOURTABLENAME") ```  
+	* (COL_NAMES could be what you extracted from odbcListColumns(), or you could edit it yourself, obviously.)
+
+When you are done, do not forget to disconnect your database connection:  
+``` DBI::dbDisconnect(con) # Disconnect from the db ```
+
+#### For more information
+* 
 
 
