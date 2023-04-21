@@ -1,5 +1,5 @@
 ## SQL-Server-connector-_dummy-code.R
-## Last modified: 2023-04-12 15:46
+## Last modified: 2023-04-21 13:47
 
 
 ########################################
@@ -25,7 +25,7 @@ con <- dbConnect(odbc::odbc(),
 ########################################
 ## Second step: select catalog and tables you want to access
 
-library(odbc) ## packages with commands for probing database
+library(odbc) ## package with commands for probing database
 
 ## List top-level objects (catalogs) in db:
 odbcListObjects(con)
