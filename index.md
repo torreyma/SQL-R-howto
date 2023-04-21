@@ -69,23 +69,26 @@ SQL server:
 returned data as an R object like AVAILABLE_TABLES because there might
 be many tables and you'll want to pick through them at your leisure.)
 
-5. If you find a table that looks promising, you may want to see what columns it contains:  
+5. If you find a table that looks promising, you may want to see what
+columns it contains:
 ``` COL_NAMES_TYPES <- odbcListColumns(con, catalog="YOURCATALOGNAME", schema="YOURSCHEMANAME", table="YOURTABLENAME") ```
 
-6. Optional: Pull out the column names as a list so you can paste them into your SQL query when you pull your object from the database:  
+6. Optional: Pull out the column names as a list so you can paste them
+into your SQL query when you pull your object from the database:
 ``` COL_NAMES <- COL_NAMES_TYPES[, "name"] ```
 
-At this point, if you don't need geometry data, you can use DBI to bring data from the table you want into R as a regular data frame:  
+At this point, if you don't need geometry data, you can use DBI to bring
+data from the table you want into R as a regular data frame:
 ``` YOUR_DB_OBJECT <- DBI::dbGetQuery(con, paste0("SELECT * FROM ", YOURSCHEMANAME, ".", YOURTABLENAME)) ```  
 (The seccond argument of ```dbGetQuery``` lets you pass an arbitrary SQL statement, if you want to compose on the fly.)
 
 #### For more information
 * [https://solutions.posit.co/connections/db/r-packages/odbc/](https://solutions.posit.co/connections/db/r-packages/odbc/)
-* 
 
 
 ### Step 3: Bring an object into R that has geometry for mapping
-If the table you want from your SQL Server includes geometry information for mapping that you want to use, you need one more R package: ```sf```. 
+If the table you want from your SQL Server includes geometry information
+for mapping that you want to use, you need one more R package: ```sf```.
 
 * Load the library:  
 ```library(sf)```
@@ -96,11 +99,16 @@ If the table you want from your SQL Server includes geometry information for map
 * Or, if you want to send an R object of type list that contains the column names you want, your code could look like this:  
 ``` SHAPE_FROM_SQL <- st_read(con, geometry_column="Shape", query="SELECT ", COL_NAMES, ",", Shape.STAsBinary() AS Shape FROM YOURSCHEMANAME.YOURTABLENAME") ```  
 	* (COL_NAMES could be what you extracted from odbcListColumns(), or you could edit it yourself, obviously.)
+* You can now do a test plot:  
+``` plot(SHAPE_FROM_SQL["Shape"], col = "darkgray", border = NA) ```
 
 When you are done, do not forget to disconnect your database connection:  
 ``` DBI::dbDisconnect(con) # Disconnect from the db ```
 
 #### For more information
-* 
+* [https://jayrobwilliams.com/posts/2020/09/spatial-sql](https://jayrobwilliams.com/posts/2020/09/spatial-sql)
+* If you have huge data, you may need to use a more complex approach: [https://hydroecology.net/reading-spatial-data-from-sql-server-without-sf/](https://hydroecology.net/reading-spatial-data-from-sql-server-without-sf/) 
+
+
 
 
