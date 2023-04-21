@@ -50,43 +50,27 @@ package you need to do this is ```odbc```.
 
 Here are the steps:
 
-1. Load the odbc package:
+1. Load the odbc package:  
+``` library(odbc) ## package with commands for probing database ```
 
-```
-library(odbc) ## package with commands for probing database
-```
-
-2. List top-level objects (catalogs) in the database:
-
-```
-odbcListObjects(con)
-```
+2. List top-level objects (catalogs) in the database:  
+``` odbcListObjects(con) ```
 
 3. Once you know which catalog you want, you will need to know the
 schema to access the tables you want from that catalog. This gives you a
-list of available schemas for your chosen catalog:
-
-```
-odbcListObjects(con, catalog="YOURCATALOGNAME")
-```
+list of available schemas for your chosen catalog:  
+``` odbcListObjects(con, catalog="YOURCATALOGNAME") ```
 
 4. When you know the schema, you can list the tables in catalog for that
 schema. This command will let you see what tables are available on your
-SQL server:
-
-```
-AVAILABLE_TABLES <- odbcListObjects(con, catalog="YOURCATALOGNAME", schema="YOURSCHEMANAME")
-```
-
+SQL server:  
+``` AVAILABLE_TABLES <- odbcListObjects(con, catalog="YOURCATALOGNAME", schema="YOURSCHEMANAME") ```  
 (You don't have to, but at this point you probably want to save the
 returned data as an R object like AVAILABLE_TABLES because there might
 be many tables and you'll want to pick through them at your leisure.)
 
-5. If you find a table that looks promising, you may want to see what columns it contains:
-
-```
-COL_NAMES_TYPES <- odbcListColumns(con, catalog="YOURCATALOGNAME", schema="YOURSCHEMANAME", table="YOURTABLENAME")
-```
+5. If you find a table that looks promising, you may want to see what columns it contains:  
+``` COL_NAMES_TYPES <- odbcListColumns(con, catalog="YOURCATALOGNAME", schema="YOURSCHEMANAME", table="YOURTABLENAME") ```
 
 Pull out the column names as a list so you can paste them into your SQL query when you pull your sf object from the database:
 col_names <- col_names_types[, "name"]
